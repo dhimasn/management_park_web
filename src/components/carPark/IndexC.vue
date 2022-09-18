@@ -1,5 +1,5 @@
 <template>
-  <div class="posts">
+<div class="posts">
       <div class="container mt-5">
           <div class="row justify-content-center">
               <div class="col-md-12">
@@ -45,7 +45,8 @@
                                       <td>{{ post.status }}</td>
                                       <td>{{ post.biaya }}</td>
                                       <td class="text-center">
-                                          <button  class="btn btn-sm btn-info mr-2" >summary</button>
+                                          <ModalC @closeModal="dataModal = false" :showModal="dataModal"></ModalC>
+                                          <router-link to="/summary" class="btn btn-sm btn-primary mr-2">EDIT</router-link>
                                           <button @click.prevent="PostDelete(post.id, id)" class="btn btn-sm btn-danger">hapus</button>
                                       </td>
                                   </tr>
@@ -57,17 +58,30 @@
               </div>
           </div>
       </div>
-  </div>
+</div>
 </template>
 <script>
+  import ModalC from "@/components/carPark/ModalC.vue"
   import axios from 'axios'
   export default {
       name: 'IndexC',
+      components : {
+            ModalC,
+      },
+       mounted(){
+        document.body.style.backgroundImage='url("")';
+        document.body.style.background="white";    
+      },
       data() {
             return {
                 create:{},
                 posts: [],
-                errors: []
+                errors: [],
+                testName:'',
+                CandidateName:'',
+                show:false,
+                /* this data is used for showing modal */
+                dataModal: false
             }
       },
       created() {
@@ -103,7 +117,13 @@
                 }).catch(error => {
                 console.log(error.response);
             });
-        }
-      }
+        },
+        openModal() { 
+            this.isModalVisible = true;
+        }, 
+        closeModal() {
+            this.isModalVisible = false;
+        } 
+    } 
   }
 </script>

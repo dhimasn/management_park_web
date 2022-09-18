@@ -6,13 +6,13 @@ Vue.config.productionTip = false
 Vue.use(VueRouter);
 
 //import component
-import PostIndexC from '@/components/carPark/IndexC.vue'
+import PostIndexC from '@/components/carPark/IndexC.vue' 
 
 const router = new VueRouter({
   routes: [{
       path: '/',
       name: 'tampil',
-      component: PostIndexC
+      component: PostIndexC,
     }
   ],
   mode: 'history'
