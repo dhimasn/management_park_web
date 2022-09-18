@@ -8,10 +8,24 @@
                           Daftar Layanan Parkir
                       </div>
                       <div class="card-body">
-                          <router-link :class="['btn btn-md btn-success mb-2']" to="/create">TAMBAH POST</router-link>
-                          <hr>
+                      <div v-if="errors.length">
+                        <div v-for="error in errors" :key="error.index" class="alert alert-danger mt-1" role="alert">
+                            {{ error }}
+                        </div>
+                      </div>
+                      <form @submit.prevent="PostStore" >
+                            <div class="form-group">
+                                <table>
+                                    <th>
+                                        <input type="text" placeholder="Registrasi" v-model="create.no_registrasi" class="form-control"/>
+                                    </th>
+                                    <th>
+                                        <button type="submit" class="btn btn-md btn-success mr-2">Parkir Mobil</button>
+                                    </th>    
+                                </table>
+                            </div>
+                      </form>
                           <div class="table-responsive mt-2">
-
                               <table class="table table-hover table-bordered">
                                   <thead>
                                   <tr>
@@ -31,14 +45,13 @@
                                       <td>{{ post.status }}</td>
                                       <td>{{ post.biaya }}</td>
                                       <td class="text-center">
-                                          <router-link :to="{name: 'edit', params: { id: post.id }}" class="btn btn-sm btn-primary mr-2">UPDATE</router-link>
-                                          <button @click.prevent="PostDelete(post.id, id)" class="btn btn-sm btn-danger">HAPUS</button>
+                                          <button  class="btn btn-sm btn-info mr-2" >summary</button>
+                                          <button @click.prevent="PostDelete(post.id, id)" class="btn btn-sm btn-danger">hapus</button>
                                       </td>
                                   </tr>
                                   </tbody>
                               </table>
                           </div>
-
                       </div>
                   </div>
               </div>
@@ -51,14 +64,46 @@
   export default {
       name: 'IndexC',
       data() {
-          return {
-              posts: []
-          }
+            return {
+                create:{},
+                posts: [],
+                errors: []
+            }
       },
       created() {
           axios.get('http://localhost:3000/car_parks').then(response => {
               this.posts = response.data.data;
           });
+      },
+      methods: {
+        PostStore(e) {
+            if (this.create.no_registrasi) {
+                axios.post('http://localhost:3000/car_park', this.create)
+                    .then(() => {
+                        this.$router.go()
+                    }).catch(error => {
+                        console.log(error.response);
+                    });
+                }
+
+                this.errors = [];
+
+                if (!this.create.no_registrasi) {
+                    this.errors.push('Masukkan No Registrasi');
+                }
+                e.preventDefault();
+
+        },
+        PostDelete(id, index)
+        {
+            axios.delete(`http://localhost:3000/car_park/${id}`)
+                .then(response => {
+                    this.posts.splice(index, 1);
+                    console.log(response);
+                }).catch(error => {
+                console.log(error.response);
+            });
+        }
       }
   }
 </script>
