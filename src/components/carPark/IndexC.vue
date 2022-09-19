@@ -1,92 +1,87 @@
 <template>
 <div class="posts">
-      <div class="container mt-5">
-          <div class="row justify-content-center">
-              <div class="col-md-12">
-                  <div class="card">
-                      <div class="card-header">
-                          Daftar Layanan Parkir
-                      </div>
-                      <div class="card-body">
-                      <div v-if="errors.length">
-                        <div v-for="error in errors" :key="error.index" class="alert alert-danger mt-1" role="alert">
-                            {{ error }}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        Daftar Layanan Parkir
+                    </div>
+                    
+                    <div class="card-body">
+                    <div v-if="errors.length">
+                    <div v-for="error in errors" :key="error.index" class="alert alert-danger mt-1" role="alert">
+                        {{ error }}
+                    </div>
+                    </div>
+                    <form @submit.prevent="PostStore" >
+                        <div class="form-group">
+                            <table>
+                                <th>
+                                    <input type="text" placeholder="Registrasi" v-model="create.no_registrasi" class="form-control"/>
+                                </th>
+                                <th>
+                                    <button type="submit" class="btn btn-md btn-success mr-2">Parkir Mobil</button>
+                                </th> 
+                                <th>
+                                    <button type="submit" class="btn btn-md btn-warning mr-2">Kapasitas {{capacity}}</button>
+                                </th>    
+                            </table>
                         </div>
-                      </div>
-                      <form @submit.prevent="PostStore" >
-                            <div class="form-group">
-                                <table>
-                                    <th>
-                                        <input type="text" placeholder="Registrasi" v-model="create.no_registrasi" class="form-control"/>
-                                    </th>
-                                    <th>
-                                        <button type="submit" class="btn btn-md btn-success mr-2">Parkir Mobil</button>
-                                    </th>    
-                                </table>
-                            </div>
-                      </form>
-                          <div class="table-responsive mt-2">
-                              <table class="table table-hover table-bordered">
-                                  <thead>
-                                  <tr>
-                                      <th>No Registrasi</th>
-                                      <th>Arrival</th>
-                                      <th>Departure</th>
-                                      <th>Status</th>
-                                      <th>Biaya</th>
-                                      <th>Aksi</th>
-                                  </tr>
-                                  </thead>
-                                  <tbody>
-                                  <tr v-for="(post, id) in posts" :key="post.id">
-                                      <td>{{ post.no_registrasi }}</td>
-                                      <td>{{ post.arrival }}</td>
-                                      <td>{{ post.departure }}</td>
-                                      <td>{{ post.status }}</td>
-                                      <td>{{ post.biaya }}</td>
-                                      <td class="text-center">
-                                          <ModalC @closeModal="dataModal = false" :showModal="dataModal"></ModalC>
-                                          <router-link to="/summary" class="btn btn-sm btn-primary mr-2">EDIT</router-link>
-                                          <button @click.prevent="PostDelete(post.id, id)" class="btn btn-sm btn-danger">hapus</button>
-                                      </td>
-                                  </tr>
-                                  </tbody>
-                              </table>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
+                    </form>
+                        <div class="table-responsive mt-2">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>No Registrasi</th>
+                                    <th>Arrival</th>
+                                    <th>Departure</th>
+                                    <th>Status</th>
+                                    <th>Biaya</th>
+                                    <th>Aksi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="(post, id) in posts" :key="post.id">
+                                    <td>{{ post.no_registrasi }}</td>
+                                    <td>{{ post.arrival }}</td>
+                                    <td>{{ post.departure }}</td>
+                                    <td>{{ post.status }}</td>
+                                    <td>{{ post.biaya }}</td>
+                                    <td class="text-center">
+                                        <router-link :to="{name:'detail',params:{id:post.id}}" class="btn btn-sm btn-primary mr-2">summary</router-link>  
+                                        <button @click.prevent="PostDelete(post.id, id)" class="btn btn-sm btn-danger">hapus</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </template>
 <script>
-  import ModalC from "@/components/carPark/ModalC.vue"
   import axios from 'axios'
   export default {
       name: 'IndexC',
-      components : {
-            ModalC,
-      },
-       mounted(){
-        document.body.style.backgroundImage='url("")';
-        document.body.style.background="white";    
-      },
       data() {
             return {
+                capacity:{},
                 create:{},
                 posts: [],
-                errors: [],
-                testName:'',
-                CandidateName:'',
-                show:false,
-                /* this data is used for showing modal */
-                dataModal: false
+                errors: []
             }
       },
       created() {
           axios.get('http://localhost:3000/car_parks').then(response => {
               this.posts = response.data.data;
+          });
+
+          axios.get('http://localhost:3000/car_park/capacity').then(response => {
+              this.capacity = response.data.data;
           });
       },
       methods: {
@@ -117,13 +112,7 @@
                 }).catch(error => {
                 console.log(error.response);
             });
-        },
-        openModal() { 
-            this.isModalVisible = true;
-        }, 
-        closeModal() {
-            this.isModalVisible = false;
-        } 
+        }
     } 
   }
 </script>
