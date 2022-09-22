@@ -13,7 +13,7 @@ const router = new VueRouter({
   routes: [
     {
       path: '/',
-      name: 'tampil',
+      name: '/',
       component: PostIndexC,
     },
     {

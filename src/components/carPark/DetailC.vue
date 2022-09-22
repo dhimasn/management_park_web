@@ -32,8 +32,8 @@
 
                             </form>
                             <p></p>
-                            <router-link :to="{name:'tampil'}" class="btn btn-md btn-success mr-2">stay</router-link>
-                            <button type="reset" class="btn btn-md btn-danger">left</button>
+                            <router-link :to="{name:'/'}" class="btn btn-md btn-success mr-2">stay</router-link>
+                            <button @click.prevent="PostUpdate(post.id)" class="btn btn-md btn-danger">left</button>
                         </div>
                     </div>
                 </div>
@@ -54,6 +54,16 @@
           axios.get(`http://localhost:3000/car_park/get/${this.$route.params.id}`).then(response => {
               this.post = response.data.data;
           });
+        },methods:{
+            PostUpdate(id)
+            {
+                axios.put(`http://localhost:3000/car_park/${id}`)
+                    .then(() => {
+                        this.$router.push('/')
+                    }).catch(error => {
+                    console.log(error.response);
+                });
+            }
         }
     }
 </script>
